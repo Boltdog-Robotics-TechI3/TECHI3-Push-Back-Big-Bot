@@ -49,3 +49,10 @@ double Odometry::getRotationDegrees() {
     }
     return 0.0;
 }
+
+double Odometry::getHeadingRadians() {
+    if (imu) {
+        return imu->get_heading();
+    }
+    return 0.0;
+}

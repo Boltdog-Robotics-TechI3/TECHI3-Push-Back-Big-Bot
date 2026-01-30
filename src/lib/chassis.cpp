@@ -1,6 +1,8 @@
 #include "lib/chassis.hpp"
 #include <cmath>
 
+std::atomic<bool> Chassis::isAtSetpoint = false; 
+
 /**
  * @brief Scales an input value based on the selected input scaling method.
  * @param input The input value to scale (-127 to 127). 
@@ -82,7 +84,7 @@ void Chassis::reset() {
         drivetrain->setMotorSpeeds({0, 0, 0, 0, 0});
     }
     if (!tracking) {
-        startTracking();
+        trackingLoop();
     }
 }
 
@@ -92,6 +94,14 @@ void Chassis::reset() {
 void Chassis::stop() {
     if (drivetrain) {
         drivetrain->setMotorSpeeds({0, 0, 0, 0, 0});
+    }
+}
+
+double Chassis::getWorldFrameHeading() {
+    if (odometry && odometry->imu) {
+        return -1 * odometry->getRotationRadians() + M_PI_2;
+    } else {
+        return 0;
     }
 }
 
@@ -107,7 +117,7 @@ Pose Chassis::getPose() const {
  * @brief Set the robot's current pose (position and orientation).
  * @param newPose The new pose to set.
  */
-void Chassis::setPose(Pose newPose) { 
+void Chassis::setPose(const Pose& newPose) { 
     *pose = newPose; 
 }
 
@@ -135,6 +145,7 @@ void Chassis::setBrakeMode(pros::motor_brake_mode_e_t mode) {
 
 //https://thepilons.ca/wp-content/uploads/2018/10/Tracking.pdf
 //TODO: Make tracking work with different odometry setups
+#warning TODO: Figure out why x and y signs arent correct (get rid of the * -1)
 void Chassis::trackPosition() {
     // Get current position
     std::array<double, 4> currentPose = odometry->getReadings();
@@ -160,7 +171,7 @@ void Chassis::trackPosition() {
     Pose formerPosition = getPose();
 
     // Calculate the change in orientation
-    double delTheta = odometry->getRotationRadians() - formerPosition.getTheta();
+    double delTheta = -1 * odometry->getRotationRadians() - formerPosition.getTheta();
     
     // Calculate local displacement vector
     double deltaDl[2]; 
@@ -180,5 +191,5 @@ void Chassis::trackPosition() {
     deltaD = deltaD.rotate(-1*thetaM);
 
     // Update the position
-    setPose(formerPosition.getX() + deltaD.getX(), formerPosition.getY() + deltaD.getY(), odometry->getRotationRadians());
+    setPose(formerPosition.getX() + deltaD.getX(), formerPosition.getY() + deltaD.getY(), -1 * odometry->getRotationRadians());
 }

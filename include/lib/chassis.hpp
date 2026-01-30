@@ -1,9 +1,11 @@
 #pragma once
+#include <iostream>
 #include "drivetrain.hpp"
 #include "odometry.hpp"
 #include "pid.hpp"
 #include "util/pose.hpp"
 #include "pros/rtos.hpp"
+#include "util/timer.hpp"
 
 class Chassis {
     protected:
@@ -13,6 +15,7 @@ class Chassis {
         Pose *pose;
         PIDController *lateralPID;
         PIDController *turnPID;
+        PIDController *alignPID;
 
         bool tracking = false;
 
@@ -24,13 +27,15 @@ class Chassis {
         /**
          * @brief Starts the tracking task if it is not already running.
          */
-        void startTracking() {
-            tracking = true;
+        void trackingLoop() {
             pros::Task trackingTask([this]
             {
                 while (true) {
-                    trackPosition();
-                    pros::delay(20); // avoid tight loop
+                    while (tracking) {
+                        trackPosition();
+                        pros::delay(20); // avoid tight loop
+                    }
+                    pros::delay(20);
                 }
             });
         }
@@ -43,6 +48,8 @@ class Chassis {
         double scaleInput(int input);
 
     public:
+        static std::atomic<bool> isAtSetpoint;
+
         enum InputScale {
             LINEAR,
             CUBIC,
@@ -55,10 +62,44 @@ class Chassis {
 
         InputScale inputScale = LINEAR;
 
+        /**
+         * @brief Construct a new Chassis object with full odometry and autonomous capabilities.
+         * @param drivetrain Pointer to the drivetrain.
+         * @param odometry Pointer to the odometry.
+         * @param lateralPID Pointer to the lateral PID controller, used for translation movements.
+         * @param turnPID Pointer to the turn PID controller, used for rotation.
+         * @param alignPID Pointer to the align PID Controller, used in conjuction with lateralPID to control the heading.
+         */
+        Chassis(Drivetrain *drivetrain, Odometry *odometry, PIDController *lateralPID, PIDController *turnPID, PIDController *alignPID)
+        : drivetrain(drivetrain), odometry(odometry), lateralPID(lateralPID), turnPID(turnPID), alignPID(alignPID), pose(new Pose()) {}
+
+        /**
+         * @brief Construct a new Chassis object with a drivetrain and odometry. 
+         * This chassis will have full odometry capabilities, but will not have autonomous features.
+         * @param drivetrain Pointer to the drivetrain.
+         * @param odometry Pointer to the odometry.
+         */
         Chassis(Drivetrain *drivetrain, Odometry *odometry)
-        : drivetrain(drivetrain), odometry(odometry), pose(new Pose()) {}
+        : drivetrain(drivetrain), odometry(odometry), lateralPID(nullptr), turnPID(nullptr), alignPID(nullptr), pose(new Pose()) {}
+
+        /**
+         * @brief Construct a new Chassis object with a drivetrain and PID controllers. 
+         * This chassis will not have odometry capabilities, but will have basic autonomous capabilities.
+         * @param drivetrain Pointer to the drivetrain.
+         * @param lateralPID Pointer to the lateral PID controller, used for translation movements.
+         * @param turnPID Pointer to the turn PID controller, used for rotation.
+         * @param alignPID Pointer to the align PID Controller, used in conjuction with lateralPID to control the heading.
+         */
+        Chassis(Drivetrain *drivetrain, PIDController *lateralPID, PIDController *turnPID, PIDController *alignPID) 
+        : drivetrain(drivetrain), odometry(nullptr), lateralPID(lateralPID), turnPID(turnPID), alignPID(alignPID) {}
+
+        /**
+         * @brief Construct a new Chassis object with only a drivetrain. 
+         * This chassis will not have odometry capabilities nor autonomous features.
+         * @param drivetrain Pointer to the drivetrain.
+         */
         Chassis(Drivetrain *drivetrain) 
-        : drivetrain(drivetrain), odometry(nullptr) {}
+        : drivetrain(drivetrain), odometry(nullptr), lateralPID(nullptr), turnPID(nullptr), alignPID(nullptr) {}
  
         /**
          * @brief Sets the input scaling method. The input scaling affects how joystick inputs are translated to motor speeds.
@@ -93,6 +134,14 @@ class Chassis {
          */
         void stop();
 
+        void startTracking() { tracking = true; }
+
+        /**
+         * @brief Get the robot's current heading in the world frame.
+         * @return The robot's current world frame heading in radians.
+         */        
+        double getWorldFrameHeading();
+
         /**
          * @brief Get the robot's current pose (position and orientation).
          * @return The robot's current pose.
@@ -103,7 +152,7 @@ class Chassis {
          * @brief Set the robot's current pose (position and orientation).
          * @param newPose The new pose to set.
          */
-        void setPose(Pose newPose);
+        void setPose(const Pose& newPose);
 
         /**
          * @brief Set the robot's current pose (position and orientation) using individual values.
@@ -120,10 +169,25 @@ class Chassis {
         void setBrakeMode(pros::motor_brake_mode_e_t mode);
 
         /**
+         * @brief Move the robot towards a specific position using a single step of PID control.
+         * 
+         * @note This method is intended to be called repeatedly in a loop until the target position is reached.
+         * Use moveToPose() for a blocking call that handles the loop internally and if the target pose won't change during the loop.
+         * Use this method if your target position may change dynamically.
+         * 
+         * @param targetPose The target pose to move to.
+         * @param isForward Whether the robot should move forward (true) or backward (false) to the target pose.
+         * 
+         */
+        void virtual moveToPoseStep(const Pose& targetPose, bool isForward = true) = 0;
+
+        /**
          * @brief Move the robot to a specific position using PID control.
          * @param targetPose The target pose to move to.
+         * @param isForward Whether the robot should move forward (true) or backward (false) to the target pose.q
+         * 
          */
-        void virtual moveToPose(Pose targetPose) = 0;
+        void virtual moveToPose(const Pose& targetPose, bool isForward = true) = 0;
 
         /**
          * @brief Turn the robot to a specific angle using PID control.
@@ -131,5 +195,5 @@ class Chassis {
          * 
          * @param targetAngle The target angle to turn to (in degrees).
          */
-        void virtual turnAngle(double targetAngle) = 0;
+        void virtual turnAngle(double targetAngle, int timeout) = 0;
 };

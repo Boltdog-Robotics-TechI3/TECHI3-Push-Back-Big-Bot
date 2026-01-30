@@ -1,4 +1,5 @@
 #include "main.h"
+#include <iostream>
 
 /**
  * Class representing a PID controller.
@@ -21,7 +22,7 @@ PIDController::PIDController(double kP, double kI, double kD) {
     this->kI = kI;
     this->kD = kD;
 
-    currentTime = pros::millis();
+    currentTime = pros::millis() + 1;
     previousTime = pros::millis();
 }
 
@@ -181,24 +182,31 @@ double PIDController::getSetpoint() {
 
 /**
  * Resets the PID controller.
- * This sets the accumulated error, error, and previous error to 0.
+ * This sets the accumulated error, error, and previous error to 0. Also resets the times.
  * It is highly recommended to call this method before starting a new loop to ensure accurate results.
  */
 void PIDController::reset() {
     accumulatedError = 0.0;
     error = 0.0;
     previousError = 0.0;
+    previousTime = pros::millis();
+    currentTime = pros::millis();
 }
 
 /**
  * Calculates the output of the PID controller based on the current measurement and setpoint.
  * This method should be called in a loop to continuously update the output.
  * 
+ * Be sure to call the reset() method before starting a new loop to ensure accurate results.
+ * 
  * @param measurement the current measurement of the system
  * @param setpoint the desired setpoint of the system
  * @return the output of the PID controller
  */
 double PIDController::calculate(double measurement, double setpoint) {
+    // Get the current time
+    currentTime = pros::millis();
+
     // Update the error
     error = setpoint - measurement;
 
@@ -206,9 +214,11 @@ double PIDController::calculate(double measurement, double setpoint) {
     int elapsedTime = currentTime - previousTime;
 
     // Calculate the output of the PID controller
-    double output = kP * error +                                  // P term
-                    (kI * accumulatedError * elapsedTime) +       // I term
-                    ((error - previousError) * kD / elapsedTime); // D term
+
+    double outputP = kP * error;
+    double outputI = kI * accumulatedError * elapsedTime;
+    double outputD = elapsedTime == 0 ? 0 : (error - previousError) * kD / elapsedTime;
+    double output = outputP + outputI + outputD;
 
     // Clamp the output
     if (minOutput != 0.0) {
@@ -243,12 +253,10 @@ double PIDController::calculate(double measurement, double setpoint) {
     // Update values
     previousError = error;
     previousTime = currentTime;
-    currentTime = pros::millis();
     previousOutput = output;
 
     // Only accumulate the error if it is within the IZone (or if IZone is disabled)
     accumulatedError += (IZone != 0 && std::abs(error) > IZone) ? 0 : error;
-
 
     return output;
 }

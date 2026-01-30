@@ -65,4 +65,10 @@ class Odometry {
          * @return The current rotation in degrees. If no IMU is present, returns 0.
          */
         double getRotationDegrees();
+
+        /**
+         * @brief Get the current heading from the IMU
+         * @return The current heading in radians. If no IMU is present, returns 0.
+         */
+        double getHeadingRadians();
 };

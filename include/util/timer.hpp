@@ -9,9 +9,11 @@ class Timer {
         callback_function callback;
         int time = 0; // in milliseconds
         bool initialized = false;
-        bool running = false;
+        std::atomic<bool> running = false;
         pros::Task task = pros::Task([this]() {
             while (true) {
+
+
                 // Check if the task restarts upon resuming
                 // Ensure the correct task is being suspended/resumed
                 // Maybe use pros::Task::current() instead of this->task
@@ -27,6 +29,7 @@ class Timer {
         });
     public:
         Timer(int time, callback_function cb);
+        ~Timer();
         void start();
         void stop();
         bool isRunning() { return running; }

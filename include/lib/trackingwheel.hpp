@@ -12,7 +12,7 @@ class TrackingWheel {
     private:
         pros::Rotation* encoder;
         double wheelDiameter; // in inches
-        double offset;
+        double offset; // Positive if ahead or to the right of the center of rotation
         WheelPosition orientation;
         double lastPosition = 0.0; // in inches
         double totalDistance = 0.0; // in inches
