@@ -6,7 +6,11 @@
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {}
+void initialize() {
+	initializeScreen();
+	chassis.reset();
+	intakeInitialize();
+}
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -53,7 +57,24 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
+	int leftX;
+	int leftY;
+	int rightX;
+
 	while (true) {
+		leftX = controller.get_analog(ANALOG_LEFT_X);
+		leftY = controller.get_analog(ANALOG_LEFT_Y);
+		rightX = controller.get_analog(ANALOG_RIGHT_X);
+
+		intakePeriodic();
+		wingPeriodic();
+
+		if(controller.get_digital(DIGITAL_X)){
+			gyro.tare();
+		}
+		
+		chassis.fieldCentricDrive(leftX, leftY, rightX);
+
 		pros::delay(20);
 	}
 }

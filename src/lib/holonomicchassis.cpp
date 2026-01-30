@@ -77,6 +77,43 @@ void HolonomicChassis::fieldCentricHeadingDrive(int leftX, int leftY, int rightX
 	driveAngle(targetDriveAngle + odometry->getRotationRadians(), speed, r);
 }
 
+/**
+ * @brief Move the robot towards a specific position using a single step of PID control.
+ * @param targetPose The target pose to move to.
+ * @param isForward Whether the robot should move forward (true) or backward (false) to the target pose.
+ */
+#warning Untested!!!
+void HolonomicChassis::moveToPoseStep(const Pose& targetPose, bool isForward) {
+    if (!lateralPID || !turnPID || !odometry) {
+        return;
+    }
+
+    // Calculate the direction to the target pose
+    double dx = targetPose.getX() - pose->getX();
+    double dy = targetPose.getY() - pose->getY();
+    double distance = sqrt(dx*dx + dy*dy);
+    
+    // If we're already at the target, stop
+    if (distance < 0.1) {
+        drivetrain->setMotorSpeeds({0, 0, 0, 0});
+        return;
+    }
+
+    // Calculate the target angle and drive speed
+    double targetDriveAngle = atan2(dy, dx);
+    int speed = lateralPID->calculate(distance, 0);
+    
+    // Apply forward/backward preference
+    if (!isForward) {
+        speed = -speed;
+    }
+
+    // Calculate the heading correction
+    double targetHeadingAngle = targetPose.getTheta();
+    double r = turnPID->calculate(pose->getTheta(), targetHeadingAngle);
+
+    driveAngle(targetDriveAngle + odometry->getRotationRadians(), speed, r);
+}
 
 /**
  * @brief Move the robot to a specific position using PID control.
