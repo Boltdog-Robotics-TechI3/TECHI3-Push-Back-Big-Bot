@@ -106,6 +106,8 @@ class HolonomicChassis : public Chassis {
          */
         void moveToPose(const Pose& targetPose, bool isForward) override;
 
+        void moveDistanceJANKY(double distance, int timeout, double slewRate = 0);
+
         /**
          * @brief Turn the robot to a specific angle using PID control.
          * 0 Degrees is facing "forward" from the starting orientation.

@@ -41,7 +41,48 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	chassis.startTracking();
+
+	// Drive to load station
+	chassis.moveDistanceJANKY(750, 5000, 150);
+	chassis.stop();
+	pros::delay(200);
+
+	setIntakeSpeed(127);
+	chassis.turnAngle(90, 3000);
+	chassis.stop();
+	pros::delay(200);
+
+	chassis.moveDistanceJANKY(600, 1000, 150);
+	chassis.stop();
+	pros::delay(200);
+
+	// wiggle load station
+	for (int i = 0; i < 2; i++) {
+		chassis.moveDistanceJANKY(-300, 300);
+		chassis.stop();
+		pros::delay(200);
+		chassis.moveDistanceJANKY(300, 300);
+		chassis.stop();
+		pros::delay(200);
+	}
+
+	chassis.turnAngle(90, 1500);
+	chassis.stop();
+	pros::delay(200);
+	setIntakeSpeed(0);
+
+	// Go Score
+	chassis.moveDistanceJANKY(-800, 1500, 150);
+	chassis.stop();
+	pros::delay(200);
+
+	scoreHigh(127);
+
+	chassis.setBrakeMode(MOTOR_BRAKE_COAST);
+
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -60,6 +101,7 @@ void opcontrol() {
 	int leftX;
 	int leftY;
 	int rightX;
+	chassis.startTracking();
 
 	while (true) {
 		leftX = controller.get_analog(ANALOG_LEFT_X);
@@ -69,8 +111,15 @@ void opcontrol() {
 		intakePeriodic();
 		wingPeriodic();
 
-		if(controller.get_digital(DIGITAL_X)){
+		if(controller.get_digital_new_press(DIGITAL_X)){
 			gyro.tare();
+		}
+
+		if (controller.get_digital(DIGITAL_B)) {
+			autonomous();
+			// controller.set_text(0, 0, " balls");
+			// chassis.moveDistanceJANKY(500, 10000);
+
 		}
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);

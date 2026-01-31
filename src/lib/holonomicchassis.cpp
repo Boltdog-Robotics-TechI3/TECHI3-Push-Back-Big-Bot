@@ -123,6 +123,63 @@ void HolonomicChassis::moveToPose(const Pose& targetPose, bool isForward) {
     // TODO: Implement MoveTo for HolonomicChassis
 }
 
+void HolonomicChassis::moveDistanceJANKY(double distance, int timeout, double slewRate) {
+    if (!lateralPID) {
+        return;
+    }
+
+    // bool isBackwards = distance < 0;
+
+    isAtSetpoint = false;
+
+    Timer timeoutTimer(timeout, +[]() { Chassis::isAtSetpoint = true; }); 
+    Timer smallTimer(500, +[]() { Chassis::isAtSetpoint = true; });
+    Timer largeTimer(1500, +[]() { Chassis::isAtSetpoint = true; });
+
+    double currentAngle = pose->getTheta();
+
+    lateralPID->reset();
+
+    lateralPID->setOutputLimits(-70, 70);
+    lateralPID->setSmallErrorRange(30);
+    lateralPID->setLargeErrorRange(60);
+
+    lateralPID->setSlewRate(slewRate);
+
+    timeoutTimer.start();
+
+    double initialPosition = drivetrain->getMotors()[0]->get_position();
+
+    while (!isAtSetpoint) {
+        double currentPosition = drivetrain->getMotors()[0]->get_position();
+
+        int output = lateralPID->calculate(currentPosition-initialPosition, distance);
+        // double correctionAngle = alignPID->calculate(pose->getTheta(), currentAngle);
+        driveAngle(Pose::degToRad(90), output, 0);
+
+        // std::cout << "Output: " << output << std::endl;
+        // std::cout << "Error: " <<  distance - (currentPosition-initialPosition) << std::endl;
+
+        if (lateralPID->isInSmallErrorRange()) {
+            smallTimer.start();
+        }
+        else if (lateralPID->isInLargeErrorRange()) {
+            smallTimer.stop();
+            largeTimer.start();
+        }
+        else {
+            smallTimer.stop();
+            largeTimer.stop();
+        }
+
+        pros::delay(20);
+    }
+    smallTimer.stop();
+    largeTimer.stop();
+    timeoutTimer.stop();
+    drivetrain->setMotorSpeeds({0, 0});
+}
+
 /**       
  * @brief Turn the robot to a specific angle using PID control.
  * 0 Degrees is facing "forward" from the starting orientation.
@@ -158,7 +215,7 @@ void HolonomicChassis::turnAngle(double targetAngle, int timeout) {
         }
 
         int output = turnPID->calculate(-1 * error, 0);
-        drivetrain->setMotorSpeeds({output, output, output, output});
+        drivetrain->setMotorSpeeds({-output, -output, -output, -output});
 
         if (turnPID->isInSmallErrorRange()) {
             smallTimer.start();

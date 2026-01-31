@@ -19,13 +19,12 @@ inline pros::MotorGroup backLeftDrive({12, -14});
 inline pros::MotorGroup backRightDrive({11, -13});
 
 
-inline pros::Motor intake1(-18);
-inline pros::Motor intake2(19);
+inline pros::MotorGroup intake({-18, 19});
 inline pros::Motor midRoller(-1);
 inline pros::Motor colorSorter(-20);
 inline pros::Motor bottomRollers(-15);
-inline pros::Motor loadOrLow(8);
-inline pros::Motor lowOrHigh(6);
+inline pros::Motor loadOrMid(-8);
+inline pros::Motor midOrHigh(6);
 inline pros::Motor hopper(-7);
 inline pros::adi::Pneumatics wing('A',true);
 
@@ -38,4 +37,8 @@ inline pros::IMU gyro(21);
 
 inline Odometry odometry(&verticalTrackingWheel, NULL, &horizontalTrackingWheel, &gyro);
 
-inline HolonomicChassis chassis(&drivetrain, &odometry);
+inline PIDController lateral(.2, 0, 0);
+inline PIDController turn(60, 0.2, 3);
+inline PIDController align(10, 0, 0);
+
+inline HolonomicChassis chassis(&drivetrain, &odometry, &lateral, &turn, &align);
