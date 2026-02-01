@@ -45,7 +45,7 @@ void autonomous() {
 	chassis.startTracking();
 
 	// Drive to load station
-	chassis.moveDistanceJANKY(750, 5000, 150);
+	chassis.moveDistanceJANKY(850, 5000, 150);
 	chassis.stop();
 	pros::delay(200);
 
@@ -79,6 +79,12 @@ void autonomous() {
 	pros::delay(200);
 
 	scoreHigh(127);
+
+	pros::delay(5000);
+	setIntakeSpeed(0);
+	chassis.turnAngle(-90, 10000);
+	
+	gyro.tare();
 
 	chassis.setBrakeMode(MOTOR_BRAKE_COAST);
 
@@ -115,12 +121,12 @@ void opcontrol() {
 			gyro.tare();
 		}
 
-		if (controller.get_digital(DIGITAL_B)) {
-			autonomous();
-			// controller.set_text(0, 0, " balls");
-			// chassis.moveDistanceJANKY(500, 10000);
+		// if (controller.get_digital(DIGITAL_B)) {
+		// 	autonomous();
+		// 	// controller.set_text(0, 0, " balls");+
+		// 	// chassis.moveDistanceJANKY(500, 10000);
 
-		}
+		// }
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
 

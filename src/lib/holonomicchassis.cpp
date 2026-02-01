@@ -234,5 +234,5 @@ void HolonomicChassis::turnAngle(double targetAngle, int timeout) {
     smallTimer.stop();
     largeTimer.stop();
     timeoutTimer.stop();
-    drivetrain->setMotorSpeeds({0, 0});
+    drivetrain->setMotorSpeeds({0, 0, 0, 0});
 }
