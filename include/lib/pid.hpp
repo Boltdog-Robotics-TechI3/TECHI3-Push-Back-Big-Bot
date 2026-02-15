@@ -31,7 +31,6 @@ class PIDController {
         double previousError;
         double accumulatedError;
         double previousOutput;
-
     public:
         /**
          * Constructor for the PID controller with inputs for the PID gains.

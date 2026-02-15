@@ -150,12 +150,12 @@ void TankChassis::moveDistance(double distance, int timeout) {
     movePID->setOutputLimits(-50, 50);
     movePID->setSmallErrorRange(1);
     movePID->setLargeErrorRange(2);
+    movePID->setSlewRate(300);
 
     alignPID->setOutputLimits(-10, 10);
 
     while (!isAtSetpoint) {
         double currentPosition = odometry ? odometry->getReadings()[0] : (drivetrain->getMotors()[0]->get_position() + drivetrain->getMotors()[1]->get_position()) / 2.0;
-
 
         if (movePID->isInSmallErrorRange()) {
             smallErrorTimer.start();
@@ -168,7 +168,6 @@ void TankChassis::moveDistance(double distance, int timeout) {
             smallErrorTimer.stop();
             largeErrorTimer.stop();
         }
-
 
         int output = movePID->calculate(currentPosition-initialPosition, distance);
 
