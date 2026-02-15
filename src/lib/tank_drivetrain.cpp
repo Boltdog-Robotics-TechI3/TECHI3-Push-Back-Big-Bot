@@ -1,21 +1,21 @@
-#include "lib/differentialdrivetrain.hpp"
+#include "lib/tank_drivetrain.hpp"
 
 /**
- * Sets the brake mode of this differential drivetrain.
+ * Sets the brake mode of this tank drivetrain.
  * 
  * @param mode The brake mode to set.
  */
-void DifferentialDrivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode) {
+void TankDrivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode) {
     leftMotors->set_brake_mode(mode);
     rightMotors->set_brake_mode(mode);
 }
 
 /**
- * Returns the brake mode of this differential drivetrain.
+ * Returns the brake mode of this tank drivetrain.
  * 
  * @return The brake mode of the drivetrain.
  */
-pros::v5::MotorBrake DifferentialDrivetrain::getBrakeMode() {
+pros::v5::MotorBrake TankDrivetrain::getBrakeMode() {
     return leftMotors->get_brake_mode();
 };
 
@@ -24,7 +24,7 @@ pros::v5::MotorBrake DifferentialDrivetrain::getBrakeMode() {
  * 
  * @param limit The current limit in milliamps.
 */
-void DifferentialDrivetrain::setCurrentLimit(int32_t limit) {
+void TankDrivetrain::setCurrentLimit(int32_t limit) {
     leftMotors->set_current_limit(limit);
     rightMotors->set_current_limit(limit);
 }
@@ -36,7 +36,7 @@ void DifferentialDrivetrain::setCurrentLimit(int32_t limit) {
  * 
  * @return A 2D vector containing the temperatures of the left and right motors.
  */
-std::vector<std::vector<double>> DifferentialDrivetrain::getTemperatures() {
+std::vector<std::vector<double>> TankDrivetrain::getTemperatures() {
     std::vector<std::vector<double>> temperatures;
     temperatures.push_back(leftMotors->get_temperature_all());
     temperatures.push_back(rightMotors->get_temperature_all());
@@ -51,7 +51,7 @@ std::vector<std::vector<double>> DifferentialDrivetrain::getTemperatures() {
  * 
  * @return A 2D vector containing the current draws of the left and right motors.
  */
-std::vector<std::vector<int32_t>> DifferentialDrivetrain::getCurrentDraws() {
+std::vector<std::vector<int32_t>> TankDrivetrain::getCurrentDraws() {
     std::vector<std::vector<int32_t>> currentDraws;
     currentDraws.push_back(leftMotors->get_current_draw_all());
     currentDraws.push_back(rightMotors->get_current_draw_all());
@@ -66,7 +66,7 @@ std::vector<std::vector<int32_t>> DifferentialDrivetrain::getCurrentDraws() {
  * 
  * @return A 2D vector containing the voltages of the left and right motors.
  */
-std::vector<std::vector<int32_t>> DifferentialDrivetrain::getVoltages() {
+std::vector<std::vector<int32_t>> TankDrivetrain::getVoltages() {
     std::vector<std::vector<int32_t>> voltages;
     voltages.push_back(leftMotors->get_voltage_all());
     voltages.push_back(rightMotors->get_voltage_all());
@@ -81,7 +81,7 @@ std::vector<std::vector<int32_t>> DifferentialDrivetrain::getVoltages() {
  * 
  * @return A 2D vector containing the velocities of the left and right motors.
  */
-std::vector<std::vector<double>> DifferentialDrivetrain::getVelocities() {
+std::vector<std::vector<double>> TankDrivetrain::getVelocities() {
     std::vector<std::vector<double>> velocities;
     velocities.push_back(leftMotors->get_actual_velocity_all());
     velocities.push_back(rightMotors->get_actual_velocity_all());
@@ -96,7 +96,7 @@ std::vector<std::vector<double>> DifferentialDrivetrain::getVelocities() {
  * 
  * @return A vector containing the left and right motor groups.
 */
-std::vector<pros::MotorGroup*> DifferentialDrivetrain::getMotors() {
+std::vector<pros::MotorGroup*> TankDrivetrain::getMotors() {
     std::vector<pros::MotorGroup*> motors;
     motors.push_back(leftMotors);
     motors.push_back(rightMotors);
@@ -110,7 +110,7 @@ std::vector<pros::MotorGroup*> DifferentialDrivetrain::getMotors() {
  * 
  * @param speeds An array containing the speeds for the left and right motors.
  */
-void DifferentialDrivetrain::setMotorSpeeds(std::initializer_list<int> speeds) {
+void TankDrivetrain::setMotorSpeeds(std::initializer_list<int> speeds) {
     leftMotors->move(speeds.begin()[0]);
     rightMotors->move(speeds.begin()[1]);
 }

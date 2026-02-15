@@ -11,7 +11,6 @@ class Drivetrain {
         double gearRatio;
 
     public:
-
         Drivetrain(double wheelDiameter, double wheelTrackWidth, double gearRatio)
         : wheelDiameter(wheelDiameter), wheelTrackWidth(wheelTrackWidth), gearRatio(gearRatio) {}
 

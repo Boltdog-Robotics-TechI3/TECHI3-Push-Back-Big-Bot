@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "drivetrain.hpp"
-#include "odometry.hpp"
+#include "odom_sensors.hpp"
 #include "pid.hpp"
 #include "util/pose.hpp"
 #include "pros/rtos.hpp"
@@ -10,12 +10,11 @@
 class Chassis {
     protected:
         Drivetrain *drivetrain;
-        Odometry *odometry;
+        OdomSensors *odometry;
 
         Pose *pose;
-        PIDController *lateralPID;
+        PIDController *movePID;
         PIDController *turnPID;
-        PIDController *alignPID;
 
         bool tracking = false;
 
@@ -66,12 +65,11 @@ class Chassis {
          * @brief Construct a new Chassis object with full odometry and autonomous capabilities.
          * @param drivetrain Pointer to the drivetrain.
          * @param odometry Pointer to the odometry.
-         * @param lateralPID Pointer to the lateral PID controller, used for translation movements.
+         * @param movePID Pointer to the move PID controller, used for translation movements.
          * @param turnPID Pointer to the turn PID controller, used for rotation.
-         * @param alignPID Pointer to the align PID Controller, used in conjuction with lateralPID to control the heading.
          */
-        Chassis(Drivetrain *drivetrain, Odometry *odometry, PIDController *lateralPID, PIDController *turnPID, PIDController *alignPID)
-        : drivetrain(drivetrain), odometry(odometry), lateralPID(lateralPID), turnPID(turnPID), alignPID(alignPID), pose(new Pose()) {}
+        Chassis(Drivetrain *drivetrain, OdomSensors *odometry, PIDController *movePID, PIDController *turnPID)
+        : drivetrain(drivetrain), odometry(odometry), movePID(movePID), turnPID(turnPID), pose(new Pose()) {}
 
         /**
          * @brief Construct a new Chassis object with a drivetrain and odometry. 
@@ -79,19 +77,18 @@ class Chassis {
          * @param drivetrain Pointer to the drivetrain.
          * @param odometry Pointer to the odometry.
          */
-        Chassis(Drivetrain *drivetrain, Odometry *odometry)
-        : drivetrain(drivetrain), odometry(odometry), lateralPID(nullptr), turnPID(nullptr), alignPID(nullptr), pose(new Pose()) {}
+        Chassis(Drivetrain *drivetrain, OdomSensors *odometry)
+        : drivetrain(drivetrain), odometry(odometry), movePID(nullptr), turnPID(nullptr), pose(new Pose()) {}
 
         /**
          * @brief Construct a new Chassis object with a drivetrain and PID controllers. 
          * This chassis will not have odometry capabilities, but will have basic autonomous capabilities.
          * @param drivetrain Pointer to the drivetrain.
-         * @param lateralPID Pointer to the lateral PID controller, used for translation movements.
+         * @param movePID Pointer to the move PID controller, used for translation movements.
          * @param turnPID Pointer to the turn PID controller, used for rotation.
-         * @param alignPID Pointer to the align PID Controller, used in conjuction with lateralPID to control the heading.
          */
-        Chassis(Drivetrain *drivetrain, PIDController *lateralPID, PIDController *turnPID, PIDController *alignPID) 
-        : drivetrain(drivetrain), odometry(nullptr), lateralPID(lateralPID), turnPID(turnPID), alignPID(alignPID) {}
+        Chassis(Drivetrain *drivetrain, PIDController *movePID, PIDController *turnPID) 
+        : drivetrain(drivetrain), odometry(nullptr), movePID(movePID), turnPID(turnPID) {}
 
         /**
          * @brief Construct a new Chassis object with only a drivetrain. 
@@ -99,7 +96,7 @@ class Chassis {
          * @param drivetrain Pointer to the drivetrain.
          */
         Chassis(Drivetrain *drivetrain) 
-        : drivetrain(drivetrain), odometry(nullptr), lateralPID(nullptr), turnPID(nullptr), alignPID(nullptr) {}
+        : drivetrain(drivetrain), odometry(nullptr), movePID(nullptr), turnPID(nullptr) {}
  
         /**
          * @brief Sets the input scaling method. The input scaling affects how joystick inputs are translated to motor speeds.
@@ -134,6 +131,10 @@ class Chassis {
          */
         void stop();
 
+        /**
+         * @brief Enables the odometry tracking loop of the robot.
+         * Call this before using odometry-reliant methods.
+         */
         void startTracking() { tracking = true; }
 
         /**
@@ -169,31 +170,20 @@ class Chassis {
         void setBrakeMode(pros::motor_brake_mode_e_t mode);
 
         /**
-         * @brief Move the robot towards a specific position using a single step of PID control.
-         * 
-         * @note This method is intended to be called repeatedly in a loop until the target position is reached.
-         * Use moveToPose() for a blocking call that handles the loop internally and if the target pose won't change during the loop.
-         * Use this method if your target position may change dynamically.
-         * 
-         * @param targetPose The target pose to move to.
-         * @param isForward Whether the robot should move forward (true) or backward (false) to the target pose.
-         * 
-         */
-        void virtual moveToPoseStep(const Pose& targetPose, bool isForward = true) = 0;
-
-        /**
          * @brief Move the robot to a specific position using PID control.
-         * @param targetPose The target pose to move to.
-         * @param isForward Whether the robot should move forward (true) or backward (false) to the target pose.q
          * 
+         * @param targetPose The target pose to move to.
+         * @param timeout The amount of time in milliseconds that the robot will try to reach the pose before giving up.
+         * @param maxSpeed The maximum speed the robot can travel, from 0 to 127.
          */
-        void virtual moveToPose(const Pose& targetPose, bool isForward = true) = 0;
+        void virtual moveToPose(const Pose& targetPose, int timeout, int maxSpeed) = 0;
 
         /**
          * @brief Turn the robot to a specific angle using PID control.
          * 0 Degrees is facing "forward" from the starting orientation.
          * 
          * @param targetAngle The target angle to turn to (in degrees).
+         * @param timeout The amount of time in milliseconds that the robot will try to reach the angle before giving up
          */
-        void virtual turnAngle(double targetAngle, int timeout) = 0;
+        void virtual turnToAngle(double targetAngle, int timeout) = 0;
 };

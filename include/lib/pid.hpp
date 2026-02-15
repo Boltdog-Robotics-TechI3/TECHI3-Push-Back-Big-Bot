@@ -140,6 +140,14 @@ class PIDController {
         void setIZone(double IZone);
 
         /**
+         * Sets the Slew Rate for the PID controller.
+         * The Slew Rate is the maximum rate of change of the output.
+         * If the change in output is greater than this rate, the output will be reduced to match this rate.
+         * Set this to 0 to disable this functionality.
+         */
+        void setSlewRate(double rate);
+
+        /**
          * Gets the IZone for the PID controller.
          * The IZone is the maximum error within which the integral term will be able to accumulate.
          * If the error is outside of this range, the integral term will do nothing.

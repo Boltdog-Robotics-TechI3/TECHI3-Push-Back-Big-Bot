@@ -3,7 +3,7 @@
 #include "lib/drivetrain.hpp"
 #include <array>
 
-class HolonomicDrivetrain : public Drivetrain {
+class XDrivetrain : public Drivetrain {
     private:
         pros::MotorGroup *frontLeftModule;
         pros::MotorGroup *frontRightModule;
@@ -15,7 +15,7 @@ class HolonomicDrivetrain : public Drivetrain {
         friend class Chassis;
 
     public:
-        HolonomicDrivetrain(pros::MotorGroup *leftFrontModule, pros::MotorGroup *rightFrontModule,
+        XDrivetrain(pros::MotorGroup *leftFrontModule, pros::MotorGroup *rightFrontModule,
                            pros::MotorGroup *leftBackModule, pros::MotorGroup *rightBackModule,
                            pros::MotorGroup *sideMotors,
                            double wheelDiameter, double wheelTrackWidth, double gearRatio)
@@ -24,7 +24,7 @@ class HolonomicDrivetrain : public Drivetrain {
           backLeftModule(leftBackModule), backRightModule(rightBackModule),
           sideMotors(sideMotors) {}
 
-        HolonomicDrivetrain(pros::MotorGroup *leftFrontModule, pros::MotorGroup *rightFrontModule,
+        XDrivetrain(pros::MotorGroup *leftFrontModule, pros::MotorGroup *rightFrontModule,
                            pros::MotorGroup *leftBackModule, pros::MotorGroup *rightBackModule,
                            double wheelDiameter, double wheelTrackWidth, double gearRatio)
         : Drivetrain(wheelDiameter, wheelTrackWidth, gearRatio),
@@ -32,7 +32,7 @@ class HolonomicDrivetrain : public Drivetrain {
           backLeftModule(leftBackModule), backRightModule(rightBackModule),
           sideMotors(nullptr) {}
 
-        HolonomicDrivetrain() : Drivetrain(0, 0, 0),
+        XDrivetrain() : Drivetrain(0, 0, 0),
                                 frontLeftModule(nullptr), frontRightModule(nullptr),
                                 backLeftModule(nullptr), backRightModule(nullptr),
                                 sideMotors(nullptr) {}

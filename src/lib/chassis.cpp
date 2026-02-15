@@ -144,29 +144,25 @@ void Chassis::setBrakeMode(pros::motor_brake_mode_e_t mode) {
 }   
 
 //https://thepilons.ca/wp-content/uploads/2018/10/Tracking.pdf
-//TODO: Make tracking work with different odometry setups
-#warning TODO: Figure out why x and y signs arent correct (get rid of the * -1)
+#warning TODO: Make tracking work with different odometry setups
 void Chassis::trackPosition() {
     // Get current position
-    std::array<double, 4> currentPose = odometry->getReadings();
+    std::array<double, 3> currentPose = odometry->getReadings();
 
-    double currentLeft = currentPose[0];
-    // auto currentRight = currentPose[1];
-    double currentBack = currentPose[2];
+    double currentVertical = currentPose[0];
+    double currentHorizontal = currentPose[1];
 
     // Calculate changes since last reading
-    double previousLeft = odometry->leftWheel->getLastPosition();
-    // auto previousRight = odometry->rightWheel->getLastPosition();
-    double previousBack = odometry->backWheel->getLastPosition();
+    double previousVertical = odometry->verticalWheel->getLastPosition();
+    double previousHorizontal = odometry->horizontalWheel->getLastPosition();
 
-    double leftChange = currentLeft - previousLeft;
-    // auto rightChange = currentRight - previousRight;
-    double backChange = currentBack - previousBack;
+    double verticalChange = currentVertical - previousVertical;
+    double horizontalChange = currentHorizontal - previousHorizontal;
 
     // Update previous positions
-    odometry->leftWheel->setLastPosition(currentLeft);
+    odometry->verticalWheel->setLastPosition(currentVertical);
     //odometry->rightWheel->setLastPosition(currentRight);
-    odometry->backWheel->setLastPosition(currentBack);
+    odometry->horizontalWheel->setLastPosition(currentHorizontal);
 
     Pose formerPosition = getPose();
 
@@ -176,11 +172,11 @@ void Chassis::trackPosition() {
     // Calculate local displacement vector
     double deltaDl[2]; 
     if(delTheta == 0){
-        deltaDl[0] = backChange;
-        deltaDl[1] = leftChange;
+        deltaDl[0] = horizontalChange;
+        deltaDl[1] = verticalChange;
     } else {
-        deltaDl[0] = (2 * sin(delTheta / 2)) * ((backChange / delTheta) + (odometry->backWheel->getOffset()));
-        deltaDl[1] = (2 * sin(delTheta / 2)) * ((leftChange / delTheta) + (odometry->leftWheel->getOffset()));
+        deltaDl[0] = (2 * sin(delTheta / 2)) * ((horizontalChange / delTheta) + (odometry->horizontalWheel->getOffset()));
+        deltaDl[1] = (2 * sin(delTheta / 2)) * ((verticalChange / delTheta) + (odometry->verticalWheel->getOffset()));
     }
     Pose deltaD = Pose(deltaDl[0], deltaDl[1], delTheta);
     

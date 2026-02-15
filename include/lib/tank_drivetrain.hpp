@@ -3,17 +3,17 @@
 #include "lib/drivetrain.hpp"
 #include <array>
 
-class DifferentialDrivetrain : public Drivetrain {
+class TankDrivetrain : public Drivetrain {
     private:
         pros::MotorGroup *leftMotors;
         pros::MotorGroup *rightMotors;
         friend class Chassis;
         
     public:
-        DifferentialDrivetrain(pros::MotorGroup *leftMotors, pros::MotorGroup *rightMotors, double wheelDiameter, double wheelTrackWidth, double gearRatio)
+        TankDrivetrain(pros::MotorGroup *leftMotors, pros::MotorGroup *rightMotors, double wheelDiameter, double wheelTrackWidth, double gearRatio)
         : Drivetrain(wheelDiameter, wheelTrackWidth, gearRatio), leftMotors(leftMotors), rightMotors(rightMotors) {}
 
-        DifferentialDrivetrain() : Drivetrain(0, 0, 0), leftMotors(nullptr), rightMotors(nullptr) {}
+        TankDrivetrain() : Drivetrain(0, 0, 0), leftMotors(nullptr), rightMotors(nullptr) {}
 
         /**
          * Sets the brake mode of the drivetrain.

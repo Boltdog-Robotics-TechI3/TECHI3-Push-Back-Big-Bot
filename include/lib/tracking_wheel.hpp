@@ -3,16 +3,16 @@
 #include "pros/rotation.hpp"
 
 enum class WheelPosition {
-    LEFT,
-    RIGHT,
-    BACK
+    VERTICAL,
+    HORIZONTAL,
+    DIAGONAL
 };
 
 class TrackingWheel {
     private:
         pros::Rotation* encoder;
         double wheelDiameter; // in inches
-        double offset; // Positive if ahead or to the right of the center of rotation
+        double offset; // Distance from tracking center to wheel.
         WheelPosition orientation;
         double lastPosition = 0.0; // in inches
         double totalDistance = 0.0; // in inches

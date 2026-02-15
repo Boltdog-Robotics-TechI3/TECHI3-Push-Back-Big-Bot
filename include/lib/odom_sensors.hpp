@@ -2,46 +2,43 @@
 
 #include <array>
 #include "pros/imu.hpp"
-#include "trackingwheel.hpp"
+#include "tracking_wheel.hpp"
 
-class Odometry {
+class OdomSensors {
     private:   
-        TrackingWheel *leftWheel;
-        TrackingWheel *rightWheel;
-        TrackingWheel *backWheel;
+        TrackingWheel *verticalWheel;
+        TrackingWheel *horizontalWheel;
         pros::IMU *imu;
 
         friend class Chassis;
     public:
         /**
          * @brief Construct a new Odometry object.
-         * @param leftWheel Pointer to the left tracking wheel.
-         * @param rightWheel Pointer to the right tracking wheel.
-         * @param backWheel Pointer to the back tracking wheel.
+         * @param verticalWheel Pointer to the vertical tracking wheel.
+         * @param horizontalWheel Pointer to the horizontal tracking wheel.
          * @param imu Pointer to the IMU sensor.
          */
-        Odometry(TrackingWheel *leftWheel, TrackingWheel *rightWheel, TrackingWheel *backWheel, pros::IMU *imu)
-        : leftWheel(leftWheel), rightWheel(rightWheel), backWheel(backWheel), imu(imu) {}
+        OdomSensors(TrackingWheel *verticalWheel, TrackingWheel *horizontalWheel, pros::IMU *imu)
+        : verticalWheel(verticalWheel), horizontalWheel(horizontalWheel), imu(imu) {}
 
         /**
          * @brief Construct a new Odometry object without an IMU.
-         * @param leftWheel Pointer to the left tracking wheel.
-         * @param rightWheel Pointer to the right tracking wheel.
-         * @param backWheel Pointer to the back tracking wheel.
+         * @param verticalWheel Pointer to the vertical tracking wheel.
+         * @param horizontalWheel Pointer to the horizontal tracking wheel.
          */
-        Odometry(TrackingWheel *leftWheel, TrackingWheel *rightWheel, TrackingWheel *backWheel) 
-        : leftWheel(leftWheel), rightWheel(rightWheel), backWheel(backWheel), imu(nullptr) {}
+        OdomSensors(TrackingWheel *verticalWheel, TrackingWheel *horizontalWheel) 
+        : verticalWheel(verticalWheel), horizontalWheel(horizontalWheel), imu(nullptr) {}
 
         /**
          * @brief Construct a new Odometry object with only an IMU.
          * @param imu Pointer to the IMU sensor.
          */
-        Odometry(pros::IMU *imu) : leftWheel(nullptr), rightWheel(nullptr), backWheel(nullptr), imu(imu) {}
+        OdomSensors(pros::IMU *imu) : verticalWheel(nullptr), horizontalWheel(nullptr), imu(imu) {}
 
         /**
          * @brief Construct a new Odometry object with no sensors.
          */
-        Odometry() : leftWheel(nullptr), rightWheel(nullptr), backWheel(nullptr), imu(nullptr) {}
+        OdomSensors() : verticalWheel(nullptr), horizontalWheel(nullptr), imu(nullptr) {}
 
         /**
          * @brief Resets all odometry sensors to their initial state.
@@ -50,9 +47,9 @@ class Odometry {
 
         /**
          * @brief Get the current readings from the odometry sensors.
-         * @return An array containing the left, right, and back wheel distances (in inches), and the IMU heading (in radians, if available).
+         * @return An array containing the vertical and horizontal wheel distances (in inches), and the IMU heading (in radians, if available).
          */
-        std::array<double, 4> getReadings();
+        std::array<double, 3> getReadings();
 
         /** 
          * @brief Get the current rotation from the IMU.

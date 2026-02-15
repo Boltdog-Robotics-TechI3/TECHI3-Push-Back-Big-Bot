@@ -1,5 +1,5 @@
 #include <cmath>
-#include "lib/trackingwheel.hpp"
+#include "lib/tracking_wheel.hpp"
 
 void TrackingWheel::reset() {
     lastPosition = 0.0;

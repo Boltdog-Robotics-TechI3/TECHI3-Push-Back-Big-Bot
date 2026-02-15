@@ -1,11 +1,11 @@
-#include "holonomicdrivetrain.hpp"
+#include "x_drivetrain.hpp"
 
 /**
- * Sets the brake mode of this Holonomic Drivetrain.
+ * Sets the brake mode of this X Drivetrain.
  * 
  * @param mode The brake mode to set.
  */
-void HolonomicDrivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode) {
+void XDrivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode) {
     frontLeftModule->set_brake_mode(mode);
     frontRightModule->set_brake_mode(mode);
     backLeftModule->set_brake_mode(mode);
@@ -17,11 +17,11 @@ void HolonomicDrivetrain::setBrakeMode(pros::motor_brake_mode_e_t mode) {
 }
 
 /**
- * Returns the brake mode of this Holonomic Drivetrain.
+ * Returns the brake mode of this X Drivetrain.
  * 
  * @return The brake mode of the drivetrain.
  */
-pros::v5::MotorBrake HolonomicDrivetrain::getBrakeMode() {
+pros::v5::MotorBrake XDrivetrain::getBrakeMode() {
     return frontLeftModule->get_brake_mode();
 };
 
@@ -30,7 +30,7 @@ pros::v5::MotorBrake HolonomicDrivetrain::getBrakeMode() {
  * 
  * @param limit The current limit in milliamps.
 */
-void HolonomicDrivetrain::setCurrentLimit(int32_t limit) {
+void XDrivetrain::setCurrentLimit(int32_t limit) {
     frontLeftModule->set_current_limit(limit);
     frontRightModule->set_current_limit(limit);
     backLeftModule->set_current_limit(limit);
@@ -52,7 +52,7 @@ void HolonomicDrivetrain::setCurrentLimit(int32_t limit) {
  * 
  * @return A 2D vector containing the temperatures of the motors
  */
-std::vector<std::vector<double>> HolonomicDrivetrain::getTemperatures() {
+std::vector<std::vector<double>> XDrivetrain::getTemperatures() {
     std::vector<std::vector<double>> temperatures;
     temperatures.push_back(frontLeftModule->get_temperature_all());
     temperatures.push_back(frontRightModule->get_temperature_all());
@@ -77,7 +77,7 @@ std::vector<std::vector<double>> HolonomicDrivetrain::getTemperatures() {
  * 
  * @return A 2D vector containing the current draws of the motors
  */
-std::vector<std::vector<int32_t>> HolonomicDrivetrain::getCurrentDraws() {
+std::vector<std::vector<int32_t>> XDrivetrain::getCurrentDraws() {
     std::vector<std::vector<int32_t>> currentDraws;
     currentDraws.push_back(frontLeftModule->get_current_draw_all());
     currentDraws.push_back(frontRightModule->get_current_draw_all());
@@ -102,7 +102,7 @@ std::vector<std::vector<int32_t>> HolonomicDrivetrain::getCurrentDraws() {
  * 
  * @return A 2D vector containing the voltages of the motors
  */
-std::vector<std::vector<int32_t>> HolonomicDrivetrain::getVoltages() {
+std::vector<std::vector<int32_t>> XDrivetrain::getVoltages() {
     std::vector<std::vector<int32_t>> voltages;
     voltages.push_back(frontLeftModule->get_voltage_all());
     voltages.push_back(frontRightModule->get_voltage_all());
@@ -127,7 +127,7 @@ std::vector<std::vector<int32_t>> HolonomicDrivetrain::getVoltages() {
  * 
  * @return A 2D vector containing the velocities of the motors
  */
-std::vector<std::vector<double>> HolonomicDrivetrain::getVelocities() {
+std::vector<std::vector<double>> XDrivetrain::getVelocities() {
     std::vector<std::vector<double>> velocities;
     velocities.push_back(frontLeftModule->get_actual_velocity_all());
     velocities.push_back(frontRightModule->get_actual_velocity_all());
@@ -152,7 +152,7 @@ std::vector<std::vector<double>> HolonomicDrivetrain::getVelocities() {
  * 
  * @return A vector containing the left and right motor groups.
 */
-std::vector<pros::MotorGroup*> HolonomicDrivetrain::getMotors() {
+std::vector<pros::MotorGroup*> XDrivetrain::getMotors() {
     std::vector<pros::MotorGroup*> motors;
     motors.push_back(frontLeftModule);
     motors.push_back(frontRightModule);
@@ -172,7 +172,7 @@ std::vector<pros::MotorGroup*> HolonomicDrivetrain::getMotors() {
  * 
  * @param speeds An array containing the speeds for the motors.
  */
-void HolonomicDrivetrain::setMotorSpeeds(std::initializer_list<int> speeds) {
+void XDrivetrain::setMotorSpeeds(std::initializer_list<int> speeds) {
     frontLeftModule->move(speeds.begin()[0]);
     frontRightModule->move(speeds.begin()[1]);
     backLeftModule->move(speeds.begin()[2]);
