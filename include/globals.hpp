@@ -13,13 +13,12 @@ inline const double gearRatio = 1;
 
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
 
-inline pros::MotorGroup frontLeftDrive({-16, 17});
-inline pros::MotorGroup frontRightDrive({-9, 10});
-inline pros::MotorGroup backLeftDrive({12, -14});
-inline pros::MotorGroup backRightDrive({11, -13});
+inline pros::MotorGroup frontLeftDrive({1, -16});
+inline pros::MotorGroup frontRightDrive({-19, 20});
+inline pros::MotorGroup backLeftDrive({-13, 14});
+inline pros::MotorGroup backRightDrive({11, -12});
 
-
-inline pros::MotorGroup intake({-18, 19});
+inline pros::MotorGroup intake({2, -3});
 inline pros::Motor midRoller(-1);
 inline pros::Motor colorSorter(-20);
 inline pros::Motor bottomRollers(-15);
@@ -30,10 +29,10 @@ inline pros::adi::Pneumatics wing('A',true);
 
 inline HolonomicDrivetrain drivetrain(&frontLeftDrive, &frontRightDrive, &backLeftDrive, &backRightDrive, wheelDiameter, trackWidth, gearRatio);
 
-inline TrackingWheel verticalTrackingWheel(7, 2, 0, WheelPosition::LEFT);
-inline TrackingWheel horizontalTrackingWheel(6, 2, 0, WheelPosition::BACK);
+inline TrackingWheel verticalTrackingWheel(17, 2.08, 0, WheelPosition::LEFT);
+inline TrackingWheel horizontalTrackingWheel(18, 2.08, 0, WheelPosition::BACK);
 
-inline pros::IMU gyro(21);
+inline pros::IMU gyro(5);
 
 inline Odometry odometry(&verticalTrackingWheel, NULL, &horizontalTrackingWheel, &gyro);
 

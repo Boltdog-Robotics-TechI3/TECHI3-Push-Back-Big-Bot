@@ -114,8 +114,14 @@ void opcontrol() {
 		leftY = controller.get_analog(ANALOG_LEFT_Y);
 		rightX = controller.get_analog(ANALOG_RIGHT_X);
 
-		intakePeriodic();
-		wingPeriodic();
+		// intakePeriodic();
+		// wingPeriodic();
+		if (controller.get_digital(DIGITAL_L1)) {
+			intake.move(100);
+		} 
+		else {
+			intake.move(0);
+		}
 
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			gyro.tare();
@@ -129,6 +135,8 @@ void opcontrol() {
 		// }
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
+
+		controller.set_text(0, 0, chassis.getPose().to_string());
 
 		pros::delay(20);
 	}
