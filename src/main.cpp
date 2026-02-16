@@ -42,51 +42,61 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+	// chassis.setPose(0, 0, -M_PI/4);
+	// imu.set_yaw(45);
 	chassis.startTracking();
 
-	// Drive to load station
-	chassis.moveDistanceJANKY(850, 5000, 150);
-	chassis.stop();
-	pros::delay(200);
 
-	setIntakeSpeed(127);
-	chassis.turnAngle(90, 3000);
-	chassis.stop();
-	pros::delay(200);
+	
+	chassis.moveToPose(Pose(26, 26, 0), 5000, 75);
+	// chassis.moveToPose(Pose(0, 37, 0), 5000, 75);
+	// chassis.turnToAngle(45, 3000);
 
-	chassis.moveDistanceJANKY(600, 1000, 150);
-	chassis.stop();
-	pros::delay(200);
 
-	// wiggle load station
-	for (int i = 0; i < 2; i++) {
-		chassis.moveDistanceJANKY(-300, 300);
-		chassis.stop();
-		pros::delay(200);
-		chassis.moveDistanceJANKY(300, 300);
-		chassis.stop();
-		pros::delay(200);
-	}
+	setIntakeSpeed(-60);
+	// intakePiston.extend();
 
-	chassis.turnAngle(90, 1500);
-	chassis.stop();
-	pros::delay(200);
-	setIntakeSpeed(0);
-
-	// Go Score
-	chassis.moveDistanceJANKY(-800, 1500, 150);
-	chassis.stop();
-	pros::delay(200);
-
-	scoreHigh(127);
 
 	pros::delay(5000);
 	setIntakeSpeed(0);
-	chassis.turnAngle(-90, 10000);
-	
-	gyro.tare();
 
-	chassis.setBrakeMode(MOTOR_BRAKE_COAST);
+// 	imu.set_heading(180);
+// 	chassis.startTracking();
+
+// 	chassis.moveToPose(Pose(30, 0, 0), 3000, 75);
+// 	pros::delay(200);
+
+// 	// Grab from goal
+// 	intakePiston.extend();
+// 	setIntakeSpeed(100);
+// 	chassis.moveToPose(Pose(30, -20, 0), 1000, 75);
+
+// 	// Score the goods
+// 	pros::delay(3000);
+// 	chassis.moveToPose(Pose(30, 20, 0), 3000, 75);
+// 	pros::delay(200);
+// 	scoreHigh(100);
+// 	pros::delay(2000);
+
+// 	// Eject bads
+// 	chassis.moveToPose(Pose(30, 0, 0), 2000, 75);
+// 	chassis.turnToAngle(45, 1000);
+// 	pros::delay(200);
+// 	scoreHigh(100);
+// 	pros::delay(2000);
+// 	setIntakeSpeed(0);
+// 	chassis.turnToAngle(0, 1000);
+// 	pros::delay(200);
+
+// 	// grab goods from loader
+// 	setIntakeSpeed(100);
+// 	chassis.moveToPose(Pose(30, -20, 0), 2000, 75);
+// 	pros::delay(3000);
+	
+// 	// score remaining blocks long goal
+// 	chassis.moveToPose(Pose(30, 20, 0), 2000, 75);
+// 	scoreHigh(100);
+
 
 }
 
@@ -107,31 +117,24 @@ void opcontrol() {
 	int leftX;
 	int leftY;
 	int rightX;
-	chassis.startTracking();
+	// chassis.startTracking();
 
 	while (true) {
 		leftX = controller.get_analog(ANALOG_LEFT_X);
 		leftY = controller.get_analog(ANALOG_LEFT_Y);
 		rightX = controller.get_analog(ANALOG_RIGHT_X);
 
-		// intakePeriodic();
-		// wingPeriodic();
-		if (controller.get_digital(DIGITAL_L1)) {
-			intake.move(100);
-		} 
-		else {
-			intake.move(0);
-		}
-
+		intakePeriodic();
+		wingPeriodic();
+		
 		if(controller.get_digital_new_press(DIGITAL_X)){
-			gyro.tare();
+			imu.tare();
 		}
 
 		// if (controller.get_digital(DIGITAL_B)) {
 		// 	autonomous();
 		// 	// controller.set_text(0, 0, " balls");+
 		// 	// chassis.moveDistanceJANKY(500, 10000);
-
 		// }
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);

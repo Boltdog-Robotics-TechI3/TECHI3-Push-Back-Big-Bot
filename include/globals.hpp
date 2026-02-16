@@ -11,33 +11,35 @@ inline const double wheelDiameter = 2.75;
 inline const double trackWidth = 12.5;
 inline const double gearRatio = 1;
 
+// Drivetrain Pieces
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
-
 inline pros::MotorGroup frontLeftDrive({1, -16});
-inline pros::MotorGroup frontRightDrive({-19, 20});
+inline pros::MotorGroup frontRightDrive({-19,20});
 inline pros::MotorGroup backLeftDrive({-13, 14});
-inline pros::MotorGroup backRightDrive({11, -12});
+inline pros::MotorGroup backRightDrive({3, -12});
 
-inline pros::MotorGroup intake({2, -3});
-inline pros::Motor midRoller(-1);
-inline pros::Motor colorSorter(-20);
-inline pros::Motor bottomRollers(-15);
-inline pros::Motor loadOrMid(-8);
-inline pros::Motor midOrHigh(6);
-inline pros::Motor hopper(-7);
-inline pros::adi::Pneumatics wing('A',true);
+inline XDrivetrain drivetrain(&frontLeftDrive, &frontRightDrive, &backLeftDrive, &backRightDrive, wheelDiameter, trackWidth, gearRatio);
 
-inline HolonomicDrivetrain drivetrain(&frontLeftDrive, &frontRightDrive, &backLeftDrive, &backRightDrive, wheelDiameter, trackWidth, gearRatio);
+// Intake Pieces
+inline pros::MotorGroup intakes({2,-21});
+inline pros::Motor frontRoller(-6);
+inline pros::Motor scoringRoller(-7);
+inline pros::Motor midRoller(-8);
+inline pros::Motor topLevel(-10);
+inline pros::Motor bottomRoller(-15);
 
-inline TrackingWheel verticalTrackingWheel(17, 2.08, 0, WheelPosition::LEFT);
-inline TrackingWheel horizontalTrackingWheel(18, 2.08, 0, WheelPosition::BACK);
+inline pros::adi::Pneumatics intakePiston('B', false);
+inline pros::adi::Pneumatics wingPiston('A', false);
 
-inline pros::IMU gyro(5);
+// Odometry Pieces
+inline TrackingWheel verticalTrackingWheel(17, 2.08, 5.5, WheelPosition::VERTICAL);
+inline TrackingWheel horizontalTrackingWheel(18, 2.08, 0, WheelPosition::HORIZONTAL);
 
-inline Odometry odometry(&verticalTrackingWheel, NULL, &horizontalTrackingWheel, &gyro);
+inline pros::IMU imu(5);
 
-inline PIDController lateral(.2, 0, 0);
-inline PIDController turn(60, 0.2, 3);
-inline PIDController align(10, 0, 0);
+inline OdomSensors odometry(&verticalTrackingWheel, &horizontalTrackingWheel, &imu);
 
-inline HolonomicChassis chassis(&drivetrain, &odometry, &lateral, &turn, &align);
+inline PIDController Lateral(6, .001, 0);
+inline PIDController Turn(70, .15, .5);
+
+inline XChassis chassis(&drivetrain, &odometry ,&Lateral, &Turn);

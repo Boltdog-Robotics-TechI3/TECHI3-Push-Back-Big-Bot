@@ -210,6 +210,4 @@ class PIDController {
          * @return whether or not the error is within the large error range
          */
         bool isInLargeErrorRange();
-
-        void setSlewRate(double slewRate) { maxSlewRate = slewRate; }
 };

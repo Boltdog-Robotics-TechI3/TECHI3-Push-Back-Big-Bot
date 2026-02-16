@@ -187,6 +187,7 @@ void XChassis::turnToAngle(double targetAngle, int timeout) {
     turnPID->setSmallErrorRange(0.02);
     turnPID->setLargeErrorRange(0.04);
     turnPID->setIZone(.5);
+    turnPID->setSlewRate(200);
 
     timeoutTimer.start();
 

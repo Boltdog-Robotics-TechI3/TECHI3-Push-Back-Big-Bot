@@ -2,10 +2,10 @@
 
 void setWing(bool stuff){
     if (stuff){
-        wing.extend();
+        wingPiston.extend();
     }
     else {
-        wing.retract();
+        wingPiston.retract();
     }
     
 }
