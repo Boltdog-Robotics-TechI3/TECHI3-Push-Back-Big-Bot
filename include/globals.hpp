@@ -11,31 +11,30 @@ inline const double wheelDiameter = 2.75;
 inline const double trackWidth = 12.5;
 inline const double gearRatio = 1;
 
-// Drivetrain Pieces
+// Drivetrain Motors
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
-inline pros::MotorGroup frontLeftDrive({1, -16});
-inline pros::MotorGroup frontRightDrive({-19,20});
-inline pros::MotorGroup backLeftDrive({-13, 14});
-inline pros::MotorGroup backRightDrive({3, -12});
+inline pros::MotorGroup frontLeftDrive({15, -14});
+inline pros::MotorGroup frontRightDrive({11, -12}); 
+inline pros::MotorGroup backLeftDrive({18, -20});
+inline pros::MotorGroup backRightDrive({17, -16});
 
 inline XDrivetrain drivetrain(&frontLeftDrive, &frontRightDrive, &backLeftDrive, &backRightDrive, wheelDiameter, trackWidth, gearRatio);
 
-// Intake Pieces
-inline pros::MotorGroup intakes({2,-21});
-inline pros::Motor frontRoller(-6);
-inline pros::Motor scoringRoller(-7);
-inline pros::Motor midRoller(-8);
-inline pros::Motor topLevel(-10);
-inline pros::Motor bottomRoller(-15);
+// Intake 
+inline pros::Motor intake(1, pros::v5::MotorGears::blue, pros::v5::MotorUnits::degrees);
+inline pros::Motor indexer(-2, pros::v5::MotorGears::blue, pros::v5::MotorUnits::degrees);
+inline pros::Motor ejector(-3, pros::v5::MotorGears::blue, pros::v5::MotorUnits::degrees);
 
 inline pros::adi::Pneumatics intakePiston('B', false);
 inline pros::adi::Pneumatics wingPiston('A', false);
 
-// Odometry Pieces
-inline TrackingWheel verticalTrackingWheel(17, 2.08, 5.5, WheelPosition::VERTICAL);
-inline TrackingWheel horizontalTrackingWheel(18, 2.08, 0, WheelPosition::HORIZONTAL);
+inline pros::Optical colorSensor(4);
 
-inline pros::IMU imu(5);
+// Odometry
+inline TrackingWheel verticalTrackingWheel(-10, 2.08, 2.875, WheelPosition::VERTICAL);
+inline TrackingWheel horizontalTrackingWheel(-9, 2.08, -6.5, WheelPosition::HORIZONTAL);
+
+inline pros::IMU imu(8);
 
 inline OdomSensors odometry(&verticalTrackingWheel, &horizontalTrackingWheel, &imu);
 

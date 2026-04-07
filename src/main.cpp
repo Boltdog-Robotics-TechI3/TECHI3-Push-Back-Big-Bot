@@ -10,6 +10,7 @@ void initialize() {
 	initializeScreen();
 	chassis.reset();
 	intakeInitialize();
+	chassis.setInputScale(Chassis::InputScale::SINSQUARED);
 }
 
 /**
@@ -53,12 +54,9 @@ void autonomous() {
 	// chassis.turnToAngle(45, 3000);
 
 
-	setIntakeSpeed(-60);
-	// intakePiston.extend();
 
 
 	pros::delay(5000);
-	setIntakeSpeed(0);
 
 // 	imu.set_heading(180);
 // 	chassis.startTracking();
@@ -117,7 +115,7 @@ void opcontrol() {
 	int leftX;
 	int leftY;
 	int rightX;
-	// chassis.startTracking();
+	chassis.startTracking();
 
 	while (true) {
 		leftX = controller.get_analog(ANALOG_LEFT_X);
@@ -131,6 +129,10 @@ void opcontrol() {
 			imu.tare();
 		}
 
+		if (wingPiston.is_extended()) {
+			leftX = 0;
+		}
+
 		// if (controller.get_digital(DIGITAL_B)) {
 		// 	autonomous();
 		// 	// controller.set_text(0, 0, " balls");+
@@ -139,7 +141,7 @@ void opcontrol() {
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
 
-		controller.set_text(0, 0, chassis.getPose().to_string());
+		controller.set_text(.0, 0, chassis.getPose().to_string());
 
 		pros::delay(20);
 	}

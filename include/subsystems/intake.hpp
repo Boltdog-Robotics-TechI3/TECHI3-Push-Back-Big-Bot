@@ -9,8 +9,10 @@ void intakeInitialize();
 void intakePeriodic();
 
 // Sets the speed of the intake motor to the specified parameter
-void setIntakeSpeed(int speed);
+void intakeBlocks(int speed);
 
 void scoreHigh(int speed);
 
 void scoreMid(int speed);
+
+void stopIntake();

@@ -11,11 +11,11 @@ void setWing(bool stuff){
 }
 
 void wingPeriodic(){
-    if (controller.get_digital_new_press(DIGITAL_A)){
+    if (controller.get_digital_new_press(DIGITAL_L2)){
         setWing(true);
     }   
 
-    if (controller.get_digital_new_press(DIGITAL_B)){
+    if (controller.get_digital_new_release(DIGITAL_L2)){
         setWing(false);
     }
 }

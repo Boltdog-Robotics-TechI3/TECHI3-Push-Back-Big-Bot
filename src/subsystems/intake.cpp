@@ -4,62 +4,53 @@ bool loadOrLowForwards = true;
 bool lowOrHighForwards = true;
 
 void intakeInitialize() {
-    intakes.set_brake_mode(MOTOR_BRAKE_COAST);
+    intake.set_brake_mode(MOTOR_BRAKE_COAST);
+    indexer.set_brake_mode(MOTOR_BRAKE_COAST);
+    ejector.set_brake_mode(MOTOR_BRAKE_COAST);
 
-    intakes.set_current_limit(1000);
-    midRoller.set_current_limit(1000);
-    frontRoller.set_current_limit(1000);
-    bottomRoller.set_current_limit(1000);
-    scoringRoller.set_current_limit(1000);
-    topLevel.set_current_limit(2000);
+    // intake.set_current_limit(1000);
+    // indexer.set_current_limit(1000);
+    // ejector.set_current_limit(1000);
 }
 
 void intakePeriodic() {
 	if (controller.get_digital(DIGITAL_L1)) { // intake
-        intakePiston.extend();
-        setIntakeSpeed(127);
+        intakeBlocks(127);
     }
-    else if (controller.get_digital(DIGITAL_L2)) { // intake
-        intakePiston.retract();
-        setIntakeSpeed(127);
+    else if (controller.get_digital(DIGITAL_A)) { // outtake
+        intakeBlocks(-80);
     }
-    else if (controller.get_digital(DIGITAL_X)){
-        scoreHigh(-127);
+    else if (controller.get_digital(DIGITAL_R1)) { // mid score
+        scoreMid(80);
     }
-    else if (controller.get_digital(DIGITAL_R1)){
-        scoreMid(127);
-    }
-    else if (controller.get_digital(DIGITAL_R2)){
+    else if (controller.get_digital(DIGITAL_R2)){ // high score
         scoreHigh(127);
     }
     else {
-        setIntakeSpeed(0);
+        stopIntake();
     }
 }
 
-void setIntakeSpeed(int speed) {     
-    intakes.move(speed);
-    bottomRoller.move(speed);
-    midRoller.move(speed);
-    frontRoller.move(speed);
-    topLevel.move(speed);
-    scoringRoller.move(0);
+void stopIntake() {
+    intake.move(0);
+    indexer.move(0);
+    ejector.move(0);
+}
+
+void intakeBlocks(int speed) {     
+    intake.move(speed);
+    indexer.move(speed - 50);
+    ejector.move(0);
 }
 
 void scoreMid(int speed) {     
-    intakes.move(speed);
-    bottomRoller.move(speed);
-    midRoller.move(speed);
-    frontRoller.move(speed);
-    scoringRoller.move(-speed);
-    topLevel.move(speed);
+    intake.move(speed);
+    indexer.move(speed);
+    ejector.move(-speed);
 }
 
 void scoreHigh(int speed) {     
-    intakes.move(speed);
-    bottomRoller.move(speed);
-    midRoller.move(speed);
-    frontRoller.move(speed);
-    scoringRoller.move(speed);
-    topLevel.move(speed);
+    intake.move(speed);
+    indexer.move(speed);
+    ejector.move(speed);
 }
