@@ -140,8 +140,9 @@ void opcontrol() {
 		// }
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
-
-		controller.set_text(.0, 0, chassis.getPose().to_string());
+		
+		controller.set_text(0,0, std::to_string(indexer.get_actual_velocity()));
+		//controller.set_text(.0, 0, chassis.getPose().to_string());
 
 		pros::delay(20);
 	}
