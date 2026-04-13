@@ -6,8 +6,7 @@ void setWing(bool stuff){
     }
     else {
         wingPiston.retract();
-    }
-    
+    }   
 }
 
 void wingPeriodic(){

@@ -13,8 +13,8 @@ inline const double gearRatio = 1;
 
 // Drivetrain Motors
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
-inline pros::MotorGroup frontLeftDrive({15, -14});
-inline pros::MotorGroup frontRightDrive({11, -12}); 
+inline pros::MotorGroup frontLeftDrive({12, -14});
+inline pros::MotorGroup frontRightDrive({11, -14}); 
 inline pros::MotorGroup backLeftDrive({18, -20});
 inline pros::MotorGroup backRightDrive({17, -16});
 
@@ -25,8 +25,8 @@ inline pros::Motor intake(1, pros::v5::MotorGears::blue, pros::v5::MotorUnits::d
 inline pros::Motor indexer(-2, pros::v5::MotorGears::blue, pros::v5::MotorUnits::degrees);
 inline pros::Motor ejector(-3, pros::v5::MotorGears::blue, pros::v5::MotorUnits::degrees);
 
-inline pros::adi::Pneumatics intakePiston('B', false);
 inline pros::adi::Pneumatics wingPiston('A', false);
+inline pros::adi::Pneumatics matchLoadPiston('B', false);
 
 inline pros::Optical colorSensor(4);
 

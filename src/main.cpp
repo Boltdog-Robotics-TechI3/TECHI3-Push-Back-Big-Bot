@@ -129,9 +129,9 @@ void opcontrol() {
 			imu.tare();
 		}
 
-		if (wingPiston.is_extended()) {
-			leftX = 0;
-		}
+		// if (wingPiston.is_extended()) {
+		// 	leftX = 0;
+		// }
 
 		// if (controller.get_digital(DIGITAL_B)) {
 		// 	autonomous();
