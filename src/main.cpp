@@ -10,7 +10,7 @@ void initialize() {
 	initializeScreen();
 	chassis.reset();
 	intakeInitialize();
-	chassis.setInputScale(Chassis::InputScale::SINSQUARED);
+	chassis.setInputScale(Chassis::InputScale::LINEAR);
 }
 
 /**
@@ -49,14 +49,18 @@ void autonomous() {
 
 
 	
-	chassis.moveToPose(Pose(26, 26, 0), 5000, 75);
+	// chassis.moveToPose(Pose(26, 26, 0), 5000, 75);
+
+	chassis.driveAngle(M_PI_2, 50, 0);
+
 	// chassis.moveToPose(Pose(0, 37, 0), 5000, 75);
 	// chassis.turnToAngle(45, 3000);
 
 
 
 
-	pros::delay(5000);
+	pros::delay(1000);
+	chassis.driveAngle(0, 0, 0);
 
 // 	imu.set_heading(180);
 // 	chassis.startTracking();
@@ -129,15 +133,17 @@ void opcontrol() {
 			imu.tare();
 		}
 
+	
+
 		// if (wingPiston.is_extended()) {
 		// 	leftX = 0;
 		// }
 
-		// if (controller.get_digital(DIGITAL_B)) {
-		// 	autonomous();
+		if (controller.get_digital(DIGITAL_B)) {
+			autonomous();
 		// 	// controller.set_text(0, 0, " balls");+
 		// 	// chassis.moveDistanceJANKY(500, 10000);
-		// }
+		}
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
 		

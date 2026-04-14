@@ -13,7 +13,7 @@ inline const double gearRatio = 1;
 
 // Drivetrain Motors
 inline pros::Controller controller(pros::E_CONTROLLER_MASTER);
-inline pros::MotorGroup frontLeftDrive({12, -14});
+inline pros::MotorGroup frontLeftDrive({12, -15});
 inline pros::MotorGroup frontRightDrive({11, -14}); 
 inline pros::MotorGroup backLeftDrive({18, -20});
 inline pros::MotorGroup backRightDrive({17, -16});
