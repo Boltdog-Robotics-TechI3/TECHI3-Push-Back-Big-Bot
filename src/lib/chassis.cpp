@@ -2,6 +2,7 @@
 #include <cmath>
 
 std::atomic<bool> Chassis::isAtSetpoint = false; 
+std::atomic<bool> Chassis::enableTurning = false; 
 
 /**
  * @brief Scales an input value based on the selected input scaling method.
@@ -119,6 +120,7 @@ Pose Chassis::getPose() const {
  */
 void Chassis::setPose(const Pose& newPose) { 
     *pose = newPose; 
+    odometry->imu->set_rotation((newPose.getTheta() * (180 / M_PI)) * -1);
 }
 
 /**
@@ -131,6 +133,7 @@ void Chassis::setPose(double x, double y, double theta) {
     pose->setX(x);
     pose->setY(y);
     pose->setTheta(theta);
+    odometry->imu->set_rotation((theta * (180 / M_PI)) * -1);
 }
 
 /**

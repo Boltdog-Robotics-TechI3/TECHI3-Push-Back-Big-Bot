@@ -44,7 +44,7 @@ double OdomSensors::getRotationDegrees() {
 
 double OdomSensors::getHeadingRadians() {
     if (imu) {
-        return imu->get_heading();
+        return imu->get_heading() * (M_PI / 180.0);    
     }
     return 0.0;
 }

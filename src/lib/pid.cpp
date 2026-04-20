@@ -182,6 +182,16 @@ double PIDController::getError() {
     return error;
 }
 
+
+/**
+ * Returns the previous error between the current measurement and the setpoint.
+ * 
+ * @return the previous error between the current measurement and the setpoint.
+ */
+double PIDController::getPreviousError() {
+    return previousError;
+}
+
 /**
  * Gets the current setpoint of the PID controller.
  * 
@@ -200,6 +210,7 @@ void PIDController::reset() {
     accumulatedError = 0.0;
     error = 0.0;
     previousError = 0.0;
+    previousOutput = 0.0;
     previousTime = pros::millis();
     currentTime = pros::millis();
 }
@@ -225,10 +236,9 @@ double PIDController::calculate(double measurement, double setpoint) {
     int elapsedTime = currentTime - previousTime;
 
     // Calculate the output of the PID controller
-
     double outputP = kP * error;
     double outputI = kI * accumulatedError * elapsedTime;
-    double outputD = elapsedTime == 0 ? 0 : (error - previousError) * kD / elapsedTime;
+    double outputD = elapsedTime == (error - previousError) * kD / elapsedTime;
     double output = outputP + outputI + outputD;
 
     // Clamp the output
@@ -289,3 +299,4 @@ bool PIDController::isInSmallErrorRange() {
 bool PIDController::isInLargeErrorRange() {
     return std::abs(error) < largeErrorRange;
 }
+
