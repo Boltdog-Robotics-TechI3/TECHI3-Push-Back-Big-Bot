@@ -141,14 +141,12 @@ void opcontrol() {
 
 		if (controller.get_digital(DIGITAL_B)) {
 			autonomous();
-		// 	// controller.set_text(0, 0, " balls");+
-		// 	// chassis.moveDistanceJANKY(500, 10000);
 		}
 		
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
 		
-		controller.set_text(0,0, std::to_string(indexer.get_actual_velocity()));
-		//controller.set_text(.0, 0, chassis.getPose().to_string());
+		// controller.set_text(0,0, std::to_string(indexer.get_actual_velocity()));
+		controller.set_text(.0, 0, chassis.getPose().to_string());
 
 		pros::delay(20);
 	}

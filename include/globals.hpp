@@ -31,14 +31,14 @@ inline pros::adi::Pneumatics matchLoadPiston('B', false);
 inline pros::Optical colorSensor(4);
 
 // Odometry
-inline TrackingWheel verticalTrackingWheel(-10, 2.08, 2.875, WheelPosition::VERTICAL);
-inline TrackingWheel horizontalTrackingWheel(-9, 2.08, -6.5, WheelPosition::HORIZONTAL);
+inline TrackingWheel verticalTrackingWheel(10, 2.08, 2.5, WheelPosition::VERTICAL);
+inline TrackingWheel horizontalTrackingWheel(9, 2.08, -6.625, WheelPosition::HORIZONTAL);
 
 inline pros::IMU imu(8);
 
 inline OdomSensors odometry(&verticalTrackingWheel, &horizontalTrackingWheel, &imu);
 
-inline PIDController Lateral(6, .001, 0);
-inline PIDController Turn(70, .15, .5);
+inline PIDController Lateral(5, 0, 0);
+inline PIDController Turn(40, 0, 0);
 
 inline XChassis chassis(&drivetrain, &odometry ,&Lateral, &Turn);
