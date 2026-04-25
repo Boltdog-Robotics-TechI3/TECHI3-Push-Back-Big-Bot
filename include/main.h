@@ -35,7 +35,6 @@
 #define PROS_USE_LITERALS
 
 #include "api.h"
-#include "pros/apix.h"
 #include "liblvgl/lvgl.h"
 
 /**
@@ -78,10 +77,11 @@ void opcontrol(void);
  */
 //#include <iostream>
 #include "lib/api.hpp"
-#include "globals.hpp"
 #include "screen.h"
-#include "subsystems/descore.hpp"
+#include "globals.hpp"
+#include "subsystems/pistons.hpp"
 #include "subsystems/intake.hpp"
+#include "subsystems/autos.hpp"
 
 #endif
 

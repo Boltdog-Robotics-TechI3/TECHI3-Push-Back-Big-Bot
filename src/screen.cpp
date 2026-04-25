@@ -34,7 +34,7 @@ void initializeScreen() {
     textBox3 = lv_label_create(lv_screen_active());
     lv_obj_set_size(textBox3, screenWidth, textBoxHeight);
     lv_obj_align(textBox3, LV_ALIGN_TOP_MID, 0, textBoxHeight * 2); // Align below Text Box 2
-    lv_label_set_text(textBox3, "0 - Alliance Mogo Red Auto");
+    lv_label_set_text(textBox3, "0 - Goal Rush Auto");
     lv_label_set_long_mode(textBox3, LV_LABEL_LONG_WRAP);
     lv_obj_set_style_text_align(textBox3, LV_TEXT_ALIGN_CENTER, 0);
     styleTextBox(textBox3, lv_palette_main(LV_PALETTE_BLUE_GREY)); // Green fill color
@@ -133,37 +133,27 @@ void onRightButton() {
 	
 	autoSelection++;
 
-	if (autoSelection >= 7) {
+	if (autoSelection >= 5) {
 		autoSelection = 0;
 	}
 	
-	  /*switch (autoSelection) {
+	  switch (autoSelection) {
 		case 0: 
-			// Auto where we rush for the plus side goal, grab it, 
-			// then score rings on it and drop it off in the corner.
-			updateTextBox(textBox3, "0 - Alliance Mogo Red Auto");
+			updateTextBox(textBox3, "0 - Goal Rush Auto");
 			break;
 		case 1: 
-			// Auto where we rush for the plus side goal, grab it, 
-			// then drop it off and go for the alliance side goal instead.
-			updateTextBox(textBox3, "0 - Alliance Mogo Blue Auto");
+			updateTextBox(textBox3, "1 - Low Then Rush Auto");
 			break;
-		case 2: 
-			updateTextBox(textBox3, "2 - Goal Rush No Wall Auto");
+        case 2: 
+			updateTextBox(textBox3, "2 - Low Then Full Loader Auto");
 			break;
 		case 3: 
-			updateTextBox(textBox3, "3 - Goal Rush Wall Stake Auto");
+			updateTextBox(textBox3, "3 - AWP Auto");
 			break;
-		case 4: 
-			updateTextBox(textBox3, "4 - Skills Auto");
-			break;
-        case 5:
-            updateTextBox(textBox3, "5 - Test Auto");
-            break;   
-        case 6:
- 			updateTextBox(textBox3, "5 - Do Nothing");
-			break;           
-	}*/
+        case 4:
+            updateTextBox(textBox3, "3 - Do Nothing");
+            break;      
+	}
 }
 
 

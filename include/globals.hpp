@@ -3,8 +3,8 @@
 
 inline bool skills = false;
 inline bool match = true;
-inline bool redAlliance = false;
-inline bool blueAlliance = true;
+inline bool redAlliance = true;
+inline bool blueAlliance = false;
 inline int autoSelection = 0;
 
 inline const double wheelDiameter = 2.75;
@@ -38,7 +38,7 @@ inline pros::IMU imu(8);
 
 inline OdomSensors odometry(&verticalTrackingWheel, &horizontalTrackingWheel, &imu);
 
-inline PIDController Lateral(5, 0, 0);
-inline PIDController Turn(40, 0, 0);
+inline PIDController Lateral(6, 0.015, 5);
+inline PIDController Turn(70, .2, 0);
 
 inline XChassis chassis(&drivetrain, &odometry ,&Lateral, &Turn);

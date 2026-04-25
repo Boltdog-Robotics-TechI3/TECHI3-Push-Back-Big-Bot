@@ -6,13 +6,18 @@
 void intakeInitialize();
 
 // Polls the controller and determines motor state
-void intakePeriodic();
+void intakeControlHandler(void* pParams);
 
 // Sets the speed of the intake motor to the specified parameter
 void intakeBlocks(int speed);
 
-void scoreHigh(int speed);
+void stopIntake();
+
+void lowIntaking(int speed);
+
+void lowScore(int speed);
 
 void scoreMid(int speed);
 
-void stopIntake();
+void scoreHigh(int speed);
+

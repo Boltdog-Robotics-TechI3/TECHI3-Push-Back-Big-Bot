@@ -108,6 +108,8 @@ void XChassis::moveToPose(moveToPoseParams params) {
         enableTurningTimer = new Timer(params.turnStartTime, +[]() { Chassis::enableTurning = true; });
     }
 
+    std::cout << "Starting Move To Pose!" << std::endl;
+
     isAtSetpoint = false;
     enableTurning = false;
 
@@ -164,7 +166,7 @@ void XChassis::moveToPose(moveToPoseParams params) {
             driveAngle(drivingAngle + odometry->getRotationRadians(), moveOutput, 0);
         }
 
-        // std::cout << "error: " << moveError << "; previous error: " << movePID->getPreviousError() << "; small error: " << movePID->isInSmallErrorRange() << "; driving angl: " << drivingAngle << "; large error: " << movePID->isInLargeErrorRange() << std::endl;
+        std::cout << "pose: " << pose->to_string() << "; error: " << moveError << "; previous error: " << movePID->getPreviousError() << "; small error: " << movePID->isInSmallErrorRange() << "; driving angl: " << drivingAngle << "; large error: " << movePID->isInLargeErrorRange() << std::endl;
 
         if (movePID->isInSmallErrorRange() && turnPID->isInSmallErrorRange()) {
             smallErrorTimer->start();
@@ -178,7 +180,7 @@ void XChassis::moveToPose(moveToPoseParams params) {
             largeErrorTimer->stop();
         }
 
-        pros::delay(10);
+        pros::delay(20);
     }
 
     smallErrorTimer->stop();
@@ -186,6 +188,10 @@ void XChassis::moveToPose(moveToPoseParams params) {
     timeoutTimer->stop();
     enableTurningTimer->stop();
     stop();
+
+    std::cout << "Ending Move To Pose!" << std::endl;
+
+    pros::delay(20);
 }
 
 /**
@@ -259,4 +265,6 @@ void XChassis::turnToAngle(turnToAngleParams params) {
     largeErrorTimer->stop();
     timeoutTimer->stop();
     drivetrain->setMotorSpeeds({0, 0, 0, 0});
+    
+    pros::delay(20);
 }

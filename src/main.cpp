@@ -43,63 +43,24 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	// chassis.setPose(0, 0, -M_PI/4);
-	// imu.set_yaw(45);
-	chassis.startTracking();
-
-
-	
-	// chassis.moveToPose(Pose(26, 26, 0), 5000, 75);
-
-	chassis.driveAngle(M_PI_2, 50, 0);
-
-	// chassis.moveToPose(Pose(0, 37, 0), 5000, 75);
-	// chassis.turnToAngle(45, 3000);
-
-
-
-
-	pros::delay(1000);
-	chassis.driveAngle(0, 0, 0);
-
-// 	imu.set_heading(180);
-// 	chassis.startTracking();
-
-// 	chassis.moveToPose(Pose(30, 0, 0), 3000, 75);
-// 	pros::delay(200);
-
-// 	// Grab from goal
-// 	intakePiston.extend();
-// 	setIntakeSpeed(100);
-// 	chassis.moveToPose(Pose(30, -20, 0), 1000, 75);
-
-// 	// Score the goods
-// 	pros::delay(3000);
-// 	chassis.moveToPose(Pose(30, 20, 0), 3000, 75);
-// 	pros::delay(200);
-// 	scoreHigh(100);
-// 	pros::delay(2000);
-
-// 	// Eject bads
-// 	chassis.moveToPose(Pose(30, 0, 0), 2000, 75);
-// 	chassis.turnToAngle(45, 1000);
-// 	pros::delay(200);
-// 	scoreHigh(100);
-// 	pros::delay(2000);
-// 	setIntakeSpeed(0);
-// 	chassis.turnToAngle(0, 1000);
-// 	pros::delay(200);
-
-// 	// grab goods from loader
-// 	setIntakeSpeed(100);
-// 	chassis.moveToPose(Pose(30, -20, 0), 2000, 75);
-// 	pros::delay(3000);
-	
-// 	// score remaining blocks long goal
-// 	chassis.moveToPose(Pose(30, 20, 0), 2000, 75);
-// 	scoreHigh(100);
-
-
+	autoSelection=2;
+	switch (autoSelection) {
+		case 0:
+			goalRushAuto();
+			break;
+		case 1:
+			lowThenRushAuto();
+			break;
+		case 2:
+			fullLoaderAuto();
+			break;
+		case 3:
+			AWPAuto();
+			break;
+		case 4:
+			// DO NOTHING
+			break;
+	}
 }
 
 /**
@@ -119,34 +80,34 @@ void opcontrol() {
 	int leftX;
 	int leftY;
 	int rightX;
-	chassis.startTracking();
+
+	setWing(false);
+	// pros::Task intakeControl(intakeControlHandler);
 
 	while (true) {
 		leftX = controller.get_analog(ANALOG_LEFT_X);
 		leftY = controller.get_analog(ANALOG_LEFT_Y);
 		rightX = controller.get_analog(ANALOG_RIGHT_X);
 
-		intakePeriodic();
-		wingPeriodic();
-		
+		// intakePeriodic();
+		pistonsPeriodic();
+
 		if(controller.get_digital_new_press(DIGITAL_X)){
 			imu.tare();
 		}
 
-	
+		if (wingPiston.is_extended()) {
+			leftX = 0;
+		}
 
-		// if (wingPiston.is_extended()) {
-		// 	leftX = 0;
-		// }
-
-		if (controller.get_digital(DIGITAL_B)) {
+		if (controller.get_digital(DIGITAL_B) && controller.get_digital(DIGITAL_RIGHT)) {
 			autonomous();
 		}
-		
+
 		chassis.fieldCentricDrive(leftX, leftY, rightX);
 		
 		// controller.set_text(0,0, std::to_string(indexer.get_actual_velocity()));
-		controller.set_text(.0, 0, chassis.getPose().to_string());
+		controller.set_text(0, 0, chassis.getPose().to_string());
 
 		pros::delay(20);
 	}
